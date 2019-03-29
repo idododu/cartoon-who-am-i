@@ -42,6 +42,8 @@
         function Cartoon(img) {
             this.url = img;
             this.name = img.split('.')[0];
+            var imgElement = new Image();
+            imgElement.src = './assets/' + img;
         }
         return Cartoon;
     }());
@@ -67,7 +69,7 @@
                 "大头儿子小头爸爸.jpg",
                 "丁丁历险记.jpg",
                 "哆啦A梦.jpg",
-                "朵拉.jpg 朵拉",
+                "朵拉.jpg",
                 "飞机总动员.jpg",
                 "功夫熊猫.jpg",
                 "灌篮高手.jpg",
