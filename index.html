@@ -42,8 +42,6 @@
         function Cartoon(img) {
             this.url = img;
             this.name = img.split('.')[0];
-            var imgElement = new Image();
-            imgElement.src = './assets/' + img;
         }
         return Cartoon;
     }());
@@ -146,7 +144,11 @@
                     randomIndex.push(idx);
                 }
             }
-            this.round = randomIndex.map(function (n) { return _this.unused[n]; });
+            this.round = randomIndex.map(function (n) { 
+              var imgElement = new Image();
+              imgElement.src = './assets/' + _this.unused[n].url;
+              return _this.unused[n]; 
+            });
         };
         WhoAmI.prototype.answer = function () {
             return this.round.map(function (c) { return c.name; });
