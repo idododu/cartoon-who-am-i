@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+  <div id="app">
+    <div style="height: 800px;text-align: center;" v-if="!showCarousel">
+      <div style="position: relative;top:380px;">
+        <el-button @click="visible = true" v-if="showAnswerBtn" v-text="'显示答案'"></el-button>
+        <el-button @click="newRound()" v-text="showAnswerBtn ? '下一轮' : '开始'"></el-button>
+      </div>
+    </div>
+    <el-dialog :visible.sync="visible" title="本轮答案">
+      <el-row>
+        <el-col :span="8" v-for="(item, index) in game.answer()" :key="index">
+          <div style="padding: 5px">
+            <el-card>
+              <div style="padding: 10px; font-size: 20px;">
+                {{item}}
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <el-carousel :interval="3000" :loop="false" height="800px" id="carousel" @change="carouselChange" v-if="showCarousel">
+      <el-carousel-item v-for="item in game.round" :key="item.name">
+        <img :src="'./assets/'+item.url" class="image">
+      </el-carousel-item>
+    </el-carousel>
+  </div>
+</body>
+  <!-- import Vue before Element -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <!-- import JavaScript -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script>
+    var Cartoon = /** @class */ (function () {
+        function Cartoon(img) {
+            this.url = img;
+            this.name = img.split('.')[0];
+        }
+        return Cartoon;
+    }());
+    var WhoAmI = /** @class */ (function () {
+        function WhoAmI() {
+            this.assets = [];
+            this.round = [];
+            this.used = [];
+            this.unused = [];
+            this.assets = [
+                "Hallo-kitty.jpeg",
+                "阿凡提.jpg",
+                "阿拉蕾.jpg",
+                "阿童木.jpg",
+                "奥特曼.jpg",
+                "北斗神拳.jpeg",
+                "变形金刚.jpg",
+                "冰雪奇缘.jpg",
+                "布雷塔斯警长.jpg",
+                "超级飞侠.jpg",
+                "宠物小精灵.jpg",
+                "大闹天宫.jpg",
+                "大头儿子小头爸爸.jpg",
+                "丁丁历险记.jpg",
+                "哆啦A梦.jpg",
+                "朵拉.jpg 朵拉",
+                "飞机总动员.jpg",
+                "功夫熊猫.jpg",
+                "灌篮高手.jpg",
+                "果宝特效.png",
+                "海底小纵队.jpg",
+                "海尔弟兄.jpg",
+                "海绵宝宝.jpg",
+                "海贼王.jpg",
+                "黑猫警长.jpg",
+                "嘿奔奔.jpg",
+                "虹猫.jpg",
+                "葫芦娃.jpg",
+                "花仙子.jpg",
+                "火影忍者.jpg",
+                "开心超人.jpg",
+                "柯南.jpg",
+                "恐龙特急刻库号.jpg",
+                "蜡笔小新.jpg",
+                "蓝精灵.jpg",
+                "乐比悠悠.jpg",
+                "绿野仙踪.jpg",
+                "猫和老鼠.jpg",
+                "美少女战士.jpeg",
+                "咪咪流浪记.jpg",
+                "米奇.jpeg",
+                "摩尔庄园.jpg",
+                "哪吒.jpg",
+                "佩奇.jpg",
+                "皮诺曹.jpg",
+                "七龙珠.jpeg",
+                "巧虎.jpg",
+                "忍者神龟.jpg",
+                "神笔马良.jpg",
+                "神探加杰特.jpg",
+                "四驱兄弟.jpg",
+                "苏菲亚公主.jpg",
+                "天空战记.jpg",
+                "天线宝宝.jpg",
+                "托马斯.jpg",
+                "汪汪队.png",
+                "希瑞.jpg",
+                "喜洋洋.jpg",
+                "小马宝莉.jpg",
+                "小熊维尼.jpg",
+                "小羊肖恩.jpeg",
+                "辛普森.jpg",
+                "星矢.jpg",
+                "星仔走天涯.jpg",
+                "驯龙高手.jpg",
+                "叶罗丽.jpg",
+                "一休哥.jpg",
+                "樱桃小丸子.jpg",
+                "中华小当家.jpg",
+                "猪猪侠.jpg",
+                "足球小将.jpg"
+            ].map(function (c) { return new Cartoon(c); });
+        }
+        WhoAmI.prototype.newRound = function () {
+            var _this = this;
+            this.used = this.used.concat(this.round);
+            this.unused = this.assets.filter(function (cartoon) {
+                return !_this.used.find(function (c) { return c.name === cartoon.name; });
+            });
+            if (this.unused.length < 10) {
+                console.warn('剩餘數量不足');
+                return;
+            }
+            this.round = [];
+            var max = this.unused.length;
+            var randomIndex = [];
+            while (randomIndex.length < 10) {
+                var idx = Math.floor(Math.random() * Math.floor(max));
+                if (randomIndex.indexOf(idx) === -1) {
+                    randomIndex.push(idx);
+                }
+            }
+            this.round = randomIndex.map(function (n) { return _this.unused[n]; });
+        };
+        WhoAmI.prototype.answer = function () {
+            return this.round.map(function (c) { return c.name; });
+        };
+        WhoAmI.prototype.reset = function () {
+            this.round = [];
+            this.used = [];
+            this.unused = [];
+        };
+        return WhoAmI;
+    }());
+    var game = new WhoAmI();
+    game.newRound();
+
+    new Vue({
+      el: '#app',
+      data: function() {
+        return { 
+          visible: false,
+          showCarousel: false,
+          showAnswerBtn: false,
+          game: game
+        };
+      },
+      methods: {
+        carouselChange: function(newIndex, oldIndex) {
+          if(newIndex == 9) {
+            this.showCarousel = false;
+            this.showAnswerBtn = true;
+          }
+        },
+        newRound: function() {
+          this.showCarousel = true;
+          this.game.newRound();
+        }
+      }
+    });
+  </script>
+  <style>
+    img {
+      display: block;
+      width: auto;
+      height: 100%;
+      margin: 0 auto;
+    }
+    .el-button {
+      padding: 50px 150px;
+      font-size: 36px;
+    }
+  </style>
+</html>
